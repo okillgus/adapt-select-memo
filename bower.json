@@ -7,7 +7,7 @@
         "Oliver Killgus <oliver.killgus@googlemail.com>"
     ],
     "displayName": "SelectMemo",
-    "component": "memo",
+    "component": "select-memo",
     "description": "The SelectMemo Component provides a component for recording a selection, saving the choice and displaying it later.",
     "main": "/js/select-memo.js",
     "keywords": [

@@ -79,44 +79,6 @@ define(function(require) {
         */
       },
 
-      displayData: function(){
-        // Daten in die View laden
-        var dbName = this.model.get('storageName');
-        console.log(dbName);
-        var selectMemoDB = this.model.get(dbName);
-        console.log("postrender", selectMemoDB);
-
-        var _topic = this.model.get("topic");
-/*
-        if (this.model.get('display') == 'one'){         // display one ?
-          this.$('#memo-out-'+_topic).append('<li>'+memoDB[_topic][_inputId]+'</li>');
-          }
-        else{ // display all ?
-          for (item in memoDB[_topic]){
-              var mess = memoDB[_topic][item];
-              if (mess != this.model.get('message')){
-                this.$('#memo-out-'+_topic).append('<li>'+memoDB[_topic][item]+'</li>');
-                }
-            }
-          }
-        // view !
-  */      
-    },
-
-      readDB: function(){
-          // Daten aus localStorage holen
-        var _data = localStorage.getItem(this.model.get('storageName'));
-        console.log("reading...", _data);
-        if (!_data) { return false; }
-        return JSON.parse(_data); 
-      },
-
-      writeDB: function(data){
-          // Daten in localStorage schreiben
-        console.log("writing...", data);
-        var _data = JSON.stringify(data);
-        localStorage.setItem(this.model.get('storageName'), _data);
-      },
 /*
       updateData: function(tp, inp, data){
         console.log('updating: ', data);
@@ -160,6 +122,31 @@ define(function(require) {
         console.log('cleared Data');
       },
 
+      displayData: function(){
+        // Daten in die View laden
+        var dbName = this.model.get('storageName');
+        console.log(dbName);
+        var selectMemoDB = this.model.get(dbName);
+        console.log("postrender", selectMemoDB);
+
+        var _topic = this.model.get("topic");
+/*
+        if (this.model.get('display') == 'one'){         // display one ?
+          this.$('#memo-out-'+_topic).append('<li>'+memoDB[_topic][_inputId]+'</li>');
+          }
+        else{ // display all ?
+          for (item in memoDB[_topic]){
+              var mess = memoDB[_topic][item];
+              if (mess != this.model.get('message')){
+                this.$('#memo-out-'+_topic).append('<li>'+memoDB[_topic][item]+'</li>');
+                }
+            }
+          }
+        // view !
+  */      
+    },
+
+    // Function to be called by user-interaction
       saveSelectMemo: function(){
           //var _topic = this.model.get("topic");
           //var _inputId = this.model.get("inputId");
@@ -181,7 +168,23 @@ define(function(require) {
         // this.updateInput(this.model.get("inputId"), this.model.get("message")); // -> Das muss für alle inputs eines topic geschehen
         // var _topic = this.model.get("topic");
         // this.clearData(_topic);
-        }                  
+        },
+
+      // DBMS: read-write localStorage
+      readDB: function(){
+          // Daten aus localStorage holen
+        var _data = localStorage.getItem(this.model.get('storageName'));
+        console.log("reading...", _data);
+        if (!_data) { return false; }
+        return JSON.parse(_data); 
+      },
+
+      writeDB: function(data){
+          // Daten in localStorage schreiben
+        console.log("writing...", data);
+        var _data = JSON.stringify(data);
+        localStorage.setItem(this.model.get('storageName'), _data);
+      }
     },
   {
       template: 'select-memo'
