@@ -29,59 +29,65 @@ define(function(require) {
       initData: function(){
         // Datensatz herrichten 
         var _topic = this.model.get("topic");
-        var _inputId = this.model.get("inputId");
-        var _message = this.model.get("message");
+        var _sel_text = this.model.get("selection_text");
+        var _items = this.structureData(_sel_text);
+        console.log('structured: ',_items);
         var _dbName = this.model.get("storageName");
         var _data = this.readDB();
         console.log("importing ..., raw: "+_data);
-        _data = this.checkData(_topic, _inputId, _message, _data);
-        console.log("structured: "+_data);
+        // aus selection_text auslesen? zeile fuer zeile
+        _data = this.checkData(_topic, _items, _data);
+        console.log("compared: "+_data);
         this.model.set(_dbName,_data);
       },
 
-      checkData: function(tp, inp, text, data){
-          // Datenstruktur überprüfen
-          // Problem: Nach ClearData
-        var obj = {};
-        obj[inp] = text;
+      structureData: function(_text){
+        var _data = []; 
+        _lines = _text.split('\n');
+        console.log(_lines);
+        for (var n = 0; n < lines.length; n++){
+          _data.push({text:lines[n], selected: {fst:0, snd:0, trd:0}});
+        }
+        return _data;
+      },
+
+      checkData: function(tp, items, data){
 
         if (!data){
             data = {};
-            data[tp] = obj;
-            return data;
         }
-        else if(!data.hasOwnProperty(tp) ){
-            data[tp] = obj;
-            return data;
+
+        // prefer dataBase 
+        if(!data.hasOwnProperty(tp) ){
+          data[tp] = items;
         }
-        else{
-            return data;
-        }
+
+        return data;
       },
 
       importData: function(){
           // Daten in die View laden
         var dbName = this.model.get('storageName');
         console.log(dbName);
-        var memoDB = this.model.get(dbName);
-        console.log("postrender", memoDB);
+        var selectMemoDB = this.model.get(dbName);
+        console.log("postrender", selectMemoDB);
         var _topic = this.model.get("topic");
-        var _inputId = this.model.get("inputId");
+        /*
         var memoText = memoDB[_topic][_inputId];
         // view !
         this.updateInput(_inputId, memoText);
+        */
       },
 
       displayData: function(){
         // Daten in die View laden
         var dbName = this.model.get('storageName');
         console.log(dbName);
-        var memoDB = this.model.get(dbName);
-        console.log("postrender", memoDB);
-        console.log("displaying... ");
-        var _topic = this.model.get("topic");
-        var _inputId = this.model.get("inputId");
+        var selectMemoDB = this.model.get(dbName);
+        console.log("postrender", selectMemoDB);
 
+        var _topic = this.model.get("topic");
+/*
         if (this.model.get('display') == 'one'){         // display one ?
           this.$('#memo-out-'+_topic).append('<li>'+memoDB[_topic][_inputId]+'</li>');
           }
@@ -94,7 +100,7 @@ define(function(require) {
             }
           }
         // view !
-        
+  */      
     },
 
       readDB: function(){
@@ -111,7 +117,7 @@ define(function(require) {
         var _data = JSON.stringify(data);
         localStorage.setItem(this.model.get('storageName'), _data);
       },
-
+/*
       updateData: function(tp, inp, data){
         console.log('updating: ', data);
         var _message = this.model.get('message');
@@ -129,12 +135,12 @@ define(function(require) {
         console.log("writing DB", localStorage);
 
       },
-
+*/
       saveData: function(tp, inp){
-        // var _dataObj = this.model.get(this.model.get('storageName'));
+        var _dataObj = this.model.get(this.model.get('storageName'));
         // _dataObj[tp][inp] = this.model.get("message");
         // this.model.set(this.model.get('storageName'), _dataObj);
-        // this.writeDB(_dataObj);
+        this.writeDB(_dataObj);
         console.log('saved Data');
       },
     
