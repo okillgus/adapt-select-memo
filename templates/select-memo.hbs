@@ -1,1 +1,11 @@
-// html with handlebars
+{{!-- /templates/select-memo.hbs --}}
+<div class="component-inner select-memo-inner">
+    {{> component this}}
+    <div class="component-widget">
+        <div class="select-memo-title">{{topic_complete}}</div>
+        <div class="select-memo-display" id="select-memo-{{inputId}}">
+        </div>
+        <button class="button resetSelectMemo" >Zurücksetzen</button> 
+        <button class="button clearSelectMemo" >Alles löschen</button></p>
+    </div>
+</div>
