@@ -1,0 +1,97 @@
+{
+  "type":"object",
+  "$schema": "http://json-schema.org/draft-04/schema",
+  "id": "http://jsonschema.net",
+  "$ref": "http://localhost/plugins/content/component/model.schema",
+  "globals": {
+    "ariaRegion": {
+      "type": "string",
+      "required": true,
+      "default": "",
+      "inputType": "Text",
+      "validators": [],
+      "translatable": true
+    }
+  },
+  "properties":{
+    "_supportedLayout": {
+      "type": "string",
+      "required": true,
+      "enum": ["full-width", "half-width", "both"],
+      "default": "both",
+      "editorOnly": true
+    },
+    "instruction": {
+      "type": "string",
+      "required": false,
+      "default": "",
+      "inputType": "Text",
+      "validators": [],
+      "help": "This is the instruction text",
+      "translatable": true
+    },
+    "storageName": {
+      "type": "string",
+      "required": true,
+      "inputType": "Text",
+      "title": "Storage-Name",
+      "help": "Specify the name for a shelf where to put the memos",
+      "default": "memoDB",
+      "validators": []
+    },
+    "topic": {
+      "type": "string",
+      "required": true,
+      "inputType": "Text",
+      "title": "Topic",
+      "help": "Specify the topic in short form for a range of memos",
+      "default": "",
+      "validators": []
+    },
+    "topic_complete": {
+      "type": "string",
+      "required": false,
+      "inputType": "Text",
+      "title": "Complete Topic",
+      "help": "Specify the complete topic for displaying it later.",
+      "default": "",
+      "validators": []
+    },    
+    "inputId": {
+      "type": "string",
+      "required": false,
+      "inputType": "Text",
+      "title": "InputID",
+      "help": "Specify a unique ID of the textarea for identifying this memo.",
+      "default": "input_",
+      "validators": []
+    },
+    "selection_text": {
+      "type": "string",
+      "required": true,
+      "inputType": "Textarea",
+      "title": "Selection Text",
+      "help": "Specify a list of options for the selection line by line.",
+      "default": "",
+      "validators": []
+    },
+    "modus": {
+      "type": "boolean",
+      "required": false,
+      "inputType": {"type": "Boolean", "options": [true, false]},
+      "title": "readonly",
+      "help": "Specify if the component is readonly, otherwise textarea will be editable.",
+      "default": false,
+      "validators": []
+    },
+    "step": {
+      "type": "select",
+      "required": false,
+      "inputType": {"type": "Select", "options": ["first visit", "second visit", "third visit"]},
+      "title": "Step",
+      "help": "Specify what step you intend: first or second visit? The second visit would intend that you see your choices of the first visit and alter them. Third visit offers to repeat this learning process once more.",
+      "default": "first visit",
+      "validators": []
+    }
+  }
+}
