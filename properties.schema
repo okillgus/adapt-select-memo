@@ -56,16 +56,7 @@
       "help": "Specify the complete topic for displaying it later.",
       "default": "",
       "validators": []
-    },    
-    "selection_text": {
-      "type": "string",
-      "required": true,
-      "inputType": "Textarea",
-      "title": "Selection Text",
-      "help": "Specify a list of options for the selection line by line.",
-      "default": "",
-      "validators": []
-    },
+    },      
     "modus": {
       "type": "boolean",
       "required": false,
@@ -76,12 +67,22 @@
       "validators": []
     },
     "step": {
-      "type": "select",
-      "required": false,
+      "type": "string",
+      "required": true,
+      "enum": ["first visit", "second visit", "third visit"],
       "inputType": {"type": "Select", "options": ["first visit", "second visit", "third visit"]},
       "title": "Step",
       "help": "Specify what step you intend: first or second visit? The second visit would intend that you see your choices of the first visit and alter them. Third visit offers to repeat this learning process once more.",
       "default": "first visit",
+      "validators": []
+    },
+    "selection_text": {
+      "type": "string",
+      "required": true,
+      "inputType": "TextArea",
+      "title": "Selection Text",
+      "help": "Specify a list of options for the selection line by line.",
+      "default": "",
       "validators": []
     }
   }

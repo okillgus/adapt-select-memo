@@ -43,11 +43,12 @@ define(function(require) {
 
       structureData: function(_text){
         var _data = []; 
-        _lines = _text.split('\n');
+        var _lines = $(_text); //_text.split('\n');
         console.log(_lines);
-        for (var n = 0; n < lines.length; n++){
-          _data.push({text:lines[n], selected: {fst:0, snd:0, trd:0}});
+        for (var n = 0; n <_lines.length; n++){
+          _data.push({text:_lines[n].innerText, selected: {fst:0, snd:0, trd:0}});
         }
+        console.log(_data);
         return _data;
       },
 
@@ -72,6 +73,9 @@ define(function(require) {
         var selectMemoDB = this.model.get(dbName);
         console.log("postrender", selectMemoDB);
         var _topic = this.model.get("topic");
+        for (var n = 0; n < selectMemoDB[topic].length; n++){
+          console.log("appending to memo-out....?");
+        }
         /*
         var memoText = memoDB[_topic][_inputId];
         // view !

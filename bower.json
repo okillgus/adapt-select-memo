@@ -1,12 +1,12 @@
 {
     "name": "adapt-select-memo",
-    "version": "0.1",
+    "version": "0.3",
     "framework": ">=2",
     "homepage": "https://github.com/okillgus/adapt-select-memo",
     "authors": [
         "Oliver Killgus <oliver.killgus@googlemail.com>"
     ],
-    "displayName": "SelectMemo",
+    "displayName": "Select-Memo",
     "component": "select-memo",
     "description": "The SelectMemo Component provides a component for recording a selection, saving the choice and displaying it later.",
     "main": "/js/select-memo.js",
