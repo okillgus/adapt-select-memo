@@ -9,7 +9,7 @@ define(function(require) {
         "click .selectMemoItem":  "saveSelectMemo",
         "click .resetSelectMemo": "resetSelectMemo",
         "click .clearSelectMemo": "clearSelectMemo",
-        "change .select-memo-checkbox": "toggleSelect"
+        "change .select-memo-checkbox": "toggleSelect",
       },
 
       preRender: function() {
@@ -51,8 +51,11 @@ define(function(require) {
         var _data = []; 
         var _lines = $(_text); //_text.split('\n');
         //console.log(_lines);
+        _inputId = this.model.get('inputId');
         for (var n = 0; n <_lines.length; n++){
-          _data.push({text:_lines[n].innerText, selected: {fst:0, snd:0, trd:0}});
+          _data.push({id: _inputId+String(n),
+                      text:_lines[n].innerText, 
+                      selected: {fst:0, snd:0, trd:0}});
         }
         console.log("structured ...");
         return _data;
@@ -79,7 +82,7 @@ define(function(require) {
         var selectMemoDB = this.model.get(dbName);
         //console.log("postrender", selectMemoDB);
         var _topic = this.model.get("topic");
-        var _inputId = this.model.get("inpuId");
+        var _inputId = this.model.get("inputId");
         var _data = selectMemoDB[_topic];
         console.log("imported:");
         console.log(_data);
@@ -89,16 +92,19 @@ define(function(require) {
       initView: function(tp, inp, data){
         var _target = $('#select-memo-'+tp);
         for (var n = 0; n < data.length; n++){
-          var item_id = inp+String(n);
+          // var item_id = inp+String(n);
           // überlege inputId... Teil des Objekts? Wäre praktisch.
-          var item = $('<input type="checkbox" class="select-memo-checkbox" id="'+item_id+'" ><label for="'+item_id+'">'+data[n].text+'</label>');
+          var item = $('<div class="component-item select-memo-item" id="container_'+data[n].id+'"><input type="checkbox" class="select-memo-checkbox" id="'+data[n].id+'" ><label class="select-memo-item-label" for="'+data[n].id+'"><div class="select-memo-item-label-inner">'+data[n].text+'</div></label></div>');
           _target.append(item);
-          console.log("appending to memo-out....?"+item_id);
+          console.log("appending to memo-out....?"+data[n].id);
         }
       },
 
-      toggleSelect: function(arg){
-        console.log(arg);
+      toggleSelect: function(obj){
+        console.log(obj);
+        console.log("Changed Elem, inputId: "+obj.currentTarget.id, "container_"+obj.currentTarget.id);
+        //input, label add class: "highlighted selected a11y-selected" -> gewählt
+        // 
       },
 
       saveData: function(tp, inp){
