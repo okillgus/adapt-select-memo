@@ -8,7 +8,8 @@ define(function(require) {
       events: {
         "click .selectMemoItem":  "saveSelectMemo",
         "click .resetSelectMemo": "resetSelectMemo",
-        "click .clearSelectMemo": "clearSelectMemo"
+        "click .clearSelectMemo": "clearSelectMemo",
+        "select-memo-checkbox": "toggleSelect"
       },
 
       preRender: function() {
@@ -31,24 +32,26 @@ define(function(require) {
         var _topic = this.model.get("topic");
         var _sel_text = this.model.get("selection_text");
         var _items = this.structureData(_sel_text);
-        console.log('structured: ',_items);
+        //console.log('structured: ',_items);
         var _dbName = this.model.get("storageName");
         var _data = this.readDB();
         console.log("importing ..., raw: "+_data);
         // aus selection_text auslesen? zeile fuer zeile
         _data = this.checkData(_topic, _items, _data);
-        console.log("compared: "+_data);
+        //console.log("compared: "+_data);
         this.model.set(_dbName,_data);
+        console.log("init: ");
+        console.log(_data);
       },
 
       structureData: function(_text){
         var _data = []; 
         var _lines = $(_text); //_text.split('\n');
-        console.log(_lines);
+        //console.log(_lines);
         for (var n = 0; n <_lines.length; n++){
           _data.push({text:_lines[n].innerText, selected: {fst:0, snd:0, trd:0}});
         }
-        console.log(_data);
+        console.log("structured ...");
         return _data;
       },
 
@@ -73,35 +76,25 @@ define(function(require) {
         var selectMemoDB = this.model.get(dbName);
         console.log("postrender", selectMemoDB);
         var _topic = this.model.get("topic");
-        for (var n = 0; n < selectMemoDB[topic].length; n++){
-          console.log("appending to memo-out....?");
+        var _inputId = this.model.get("inpuId");
+        var _data = selectMemoDB[topic];
+        this.initView(_topic, _inputId, _data);
+      },
+
+      initView: function(tp, inp, data){
+        var _target = $('#select-memo-'+tp);
+        for (var n = 0; n < data.length; n++){
+          var item_id = _inp+String(n);
+          var item = $('<input type="checkbox" class="select-memo-checkbox" id="'+item_id+'" ><label for="'+item_id+'">'+selectMemoDB[topic][n]+'</label>');
+          _target.append(item);
+          console.log("appending to memo-out....?"+item_id);
         }
-        /*
-        var memoText = memoDB[_topic][_inputId];
-        // view !
-        this.updateInput(_inputId, memoText);
-        */
       },
 
-/*
-      updateData: function(tp, inp, data){
-        console.log('updating: ', data);
-        var _message = this.model.get('message');
-
-        var _dataObj = this.readDB();
-        _dataObj = this.checkData(tp, inp, _message, _dataObj);
-
-        console.log('current DB: ', _dataObj);
-
-        _dataObj[tp][inp] = data;
-        this.model.set(this.model.get('storageName'), _dataObj);
-        console.log('current Data: ', this.model.get(this.model.get('storageName')) );
-        
-        this.writeDB(_dataObj);
-        console.log("writing DB", localStorage);
-
+      toggleSelect: function(arg){
+        console.log(arg);
       },
-*/
+
       saveData: function(tp, inp){
         var _dataObj = this.model.get(this.model.get('storageName'));
         // _dataObj[tp][inp] = this.model.get("message");
@@ -178,7 +171,7 @@ define(function(require) {
       readDB: function(){
           // Daten aus localStorage holen
         var _data = localStorage.getItem(this.model.get('storageName'));
-        console.log("reading...", _data);
+        console.log("reading DB ...", _data);
         if (!_data) { return false; }
         return JSON.parse(_data); 
       },
