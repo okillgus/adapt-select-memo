@@ -9,19 +9,22 @@ define(function(require) {
         "click .selectMemoItem":  "saveSelectMemo",
         "click .resetSelectMemo": "resetSelectMemo",
         "click .clearSelectMemo": "clearSelectMemo",
-        "select-memo-checkbox": "toggleSelect"
+        "change .select-memo-checkbox": "toggleSelect"
       },
 
       preRender: function() {
           // this.checkIfResetOnRevisit();
+          console.log('calling initData.');
           this.initData();
       },
 
       postRender: function() {
         if (! this.model.get('modus')){
+          console.log('calling importData.');
           this.importData();
         }
         else{
+          console.log('calling displayData.');
           this.displayData();
         }
           this.setReadyStatus();
@@ -35,7 +38,7 @@ define(function(require) {
         //console.log('structured: ',_items);
         var _dbName = this.model.get("storageName");
         var _data = this.readDB();
-        console.log("importing ..., raw: "+_data);
+        // console.log("importing ..., raw: "+_data);
         // aus selection_text auslesen? zeile fuer zeile
         _data = this.checkData(_topic, _items, _data);
         //console.log("compared: "+_data);
@@ -72,20 +75,23 @@ define(function(require) {
       importData: function(){
           // Daten in die View laden
         var dbName = this.model.get('storageName');
-        console.log(dbName);
+        //console.log(dbName);
         var selectMemoDB = this.model.get(dbName);
-        console.log("postrender", selectMemoDB);
+        //console.log("postrender", selectMemoDB);
         var _topic = this.model.get("topic");
         var _inputId = this.model.get("inpuId");
-        var _data = selectMemoDB[topic];
+        var _data = selectMemoDB[_topic];
+        console.log("imported:");
+        console.log(_data);
         this.initView(_topic, _inputId, _data);
       },
 
       initView: function(tp, inp, data){
         var _target = $('#select-memo-'+tp);
         for (var n = 0; n < data.length; n++){
-          var item_id = _inp+String(n);
-          var item = $('<input type="checkbox" class="select-memo-checkbox" id="'+item_id+'" ><label for="'+item_id+'">'+selectMemoDB[topic][n]+'</label>');
+          var item_id = inp+String(n);
+          // überlege inputId... Teil des Objekts? Wäre praktisch.
+          var item = $('<input type="checkbox" class="select-memo-checkbox" id="'+item_id+'" ><label for="'+item_id+'">'+data[n].text+'</label>');
           _target.append(item);
           console.log("appending to memo-out....?"+item_id);
         }

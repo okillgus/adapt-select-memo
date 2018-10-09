@@ -56,6 +56,15 @@
       "help": "Specify the complete topic for displaying it later.",
       "default": "",
       "validators": []
+    },
+    "inputId": {
+      "type": "string",
+      "required": false,
+      "inputType": "Text",
+      "title": "InputID",
+      "help": "Specify a unique ID for all options of your selection.",
+      "default": "select-memo-input_",
+      "validators": []
     },      
     "modus": {
       "type": "boolean",
