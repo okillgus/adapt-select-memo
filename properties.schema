@@ -85,14 +85,37 @@
       "default": "first visit",
       "validators": []
     },
-    "selection_text": {
-      "type": "string",
+    "_items": {
+      "type": "array",
       "required": true,
-      "inputType": "TextArea",
-      "title": "Selection Text",
-      "help": "Specify a list of options for the selection line by line.",
-      "default": "",
-      "validators": []
+      "title": "Selectable options",
+      "help": "The options available to the learner",
+      "items": {
+        "type": "object",
+        "required": true,
+        "properties": {
+          "text": {
+            "type": "string",
+            "required": true,
+            "default": "",
+            "title": "Option Text",
+            "inputType": "Text",
+            "validators": ["required"],
+            "help": "This text will display as option to choose",
+            "translatable": true
+          },
+          "feedback": {
+            "type": "string",
+            "required": false,
+            "default": "",
+            "title": "Answer-specific feedback",
+            "inputType": "TextArea",
+            "validators": [],
+            "help": "When 'Selectable Items' is set to 1, this can be used to give the user feedback specific to the answer they selected",
+            "translatable": true
+          }
+        }
+      }
     }
   }
 }

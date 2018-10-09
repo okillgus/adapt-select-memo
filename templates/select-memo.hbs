@@ -4,6 +4,14 @@
     <div class="component-widget">
         <div class="select-memo-title">{{topic_complete}}</div>
         <div class="select-memo-display" id="select-memo-{{topic}}">
+            {{#each _items}}
+            <div class="component-item select-memo-item" id="item_{{inputId}}">
+                <input type="checkbox" class="select-memo-checkbox" id="{{inputId}}" >
+                <label class="select-memo-item-label" for="{{inputId}}">
+                <div class="select-memo-item-label-inner">{{text}}</div>
+                </label>
+            </div>
+            {{/each }}
         </div>
         <button class="button resetSelectMemo" >Zurücksetzen</button> 
         <button class="button clearSelectMemo" >Alles löschen</button></p>
