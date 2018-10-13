@@ -78,11 +78,11 @@
     "step": {
       "type": "string",
       "required": true,
-      "enum": ["first visit", "second visit", "third visit"],
-      "inputType": {"type": "Select", "options": ["first visit", "second visit", "third visit"]},
+      "enum": ["first", "second", "third"],
+      "inputType": {"type": "Select", "options": ["first", "second", "third"]},
       "title": "Step",
-      "help": "Specify what step you intend: first or second visit? The second visit would intend that you see your choices of the first visit and alter them. Third visit offers to repeat this learning process once more.",
-      "default": "first visit",
+      "help": "Specify what step you intend: first or second or third visit? The second visit would intend that you see your choices of the first visit and alter them. Third visit offers to repeat this learning process once more.",
+      "default": "first",
       "validators": []
     },
     "_items": {
@@ -102,16 +102,6 @@
             "inputType": "Text",
             "validators": ["required"],
             "help": "This text will display as option to choose",
-            "translatable": true
-          },
-          "feedback": {
-            "type": "string",
-            "required": false,
-            "default": "",
-            "title": "Answer-specific feedback",
-            "inputType": "TextArea",
-            "validators": [],
-            "help": "When 'Selectable Items' is set to 1, this can be used to give the user feedback specific to the answer they selected",
             "translatable": true
           }
         }
