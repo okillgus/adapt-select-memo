@@ -1,12 +1,12 @@
 define(function(require) {
-    
+    //PROBLEM: cannot rfeda items of infdefined
   var ComponentView = require('coreViews/componentView');
   var Adapt = require('coreJS/adapt');
 
   var SelectMemo = ComponentView.extend({
 
     events: {
-      'click .selectMemoItem':  'saveSelectMemo',
+      // 'click .selectMemoItem':  'saveSelectMemo',
       'click .resetSelectMemo': 'resetSelectMemo',
       'click .clearSelectMemo': 'clearSelectMemo',
       'change .select-memo-checkbox': 'toggleSelect',
@@ -21,6 +21,7 @@ define(function(require) {
     postRender: function() {
       console.log('calling importData.');
       var data = this.importData();
+      this.updateModel(data);
       this.updateView(data);
       //if (! this.model.get('modus')){
       //  this.updateView(data);
@@ -36,6 +37,8 @@ define(function(require) {
       // Datensatz herrichten 
       // var _topic = this.model.get('topic');
       //var _sel_text = this.model.get('selection_text');
+
+
       var _inputId = this.model.get('inputId');
       var _items = this.model.get('_items'); // this.structureData(_sel_text);
       for (var n = 0; n < _items.length; n++){
@@ -67,16 +70,41 @@ define(function(require) {
       // var _inputId = this.model.get('inputId');
       // var _data = selectMemoDB[_topic];
       var _data = this.readDB() || {};
+      _data = this.checkData(_data);
       console.log('imported:');
       console.log(_data);
       // this.initView(_topic, _inputId, _data);
       return _data;
     },
 
+    checkData: function(data){
+      var _storageName = this.model.get('storageName');
+      var _db = this.model.get(_storageName);
+      var _topic = this.model.get('topic');
+      if (!_db){
+        _db = {_topic:[] };
+      }
+      else if (!_db.hasProperty(_topic)){
+        _db[_topic] = [];
+      }
+      this.model.set(_storageName, _db);
+      return _db;
+    },
+
+    updateModel: function(data){
+
+      console.log('updating model data');
+      var _topic = this.model.get('topic');
+      if(data[_topic]['items'] != []){
+        this.model.set('items', data[_topic]['items']);
+      }
+    },
+
     updateView: function(data){
 
       console.log('marking up options');
-      for (var item in data){
+      var _topic = this.model.get('topic');
+      for (var item in data[_topic]){
         console.log(item);
         // graphische Darstellung: schon gewählt wurde...  
         var _classes = item.steps.join(' ');
@@ -98,8 +126,10 @@ define(function(require) {
 
     toggleSelect: function(ev){
       var _visit = this.model.get('step');
-      console.log(_visit);
-      console.log('Changed Elem, inputId: '+ev.currentTarget.id, 'container_'+ev.currentTarget.id);
+      var _topic = this.model.get('topic');
+      var _items = this.model.get('items');
+      // console.log(_visit);
+      // console.log('Changed Elem, inputId: '+ev.currentTarget.id, 'container_'+ev.currentTarget.id);
       //input, label add class: 'highlighted selected a11y-selected' -> gewählt
       // if obj is selected: unselect + un-markup
 
@@ -107,32 +137,54 @@ define(function(require) {
       // -> Klassen je nach Schritt hinzufügen oder wegnehmen.
       // jQuery-Context!
       var obj = $("#"+ev.currentTarget.id);
-      var inputId = obj.prop("id");
-      var _inputCont = $('#item_'+inputId);
+      var _inputId = obj.prop("id");
+      var _inputCont = $('#item_'+_inputId);
       var _classes = _inputCont.prop('class');  
       if (obj.prop("checked")){
         if(_classes.substr(-1) != " "){ _visit = " "+_visit; }
-        _classes = _classes + _visit;  
+        _classes = _classes + _visit;
+        _items = this.setItem(_items, _inputId);
       }
       else{// else: select + markup
         _classes = _classes.replace(_visit, '');
+        _items = this.removeItem(_items, _inputId);
       }
       _inputCont.prop('class', _classes);
       //var _visit = this.model.get('step');
       console.log("_classes, str: ", _classes, ", obj: ", _inputCont.prop('class'));
       // -> update model
+      this.model.set('items', _items);
       // -> write db.
+      this.saveData();
     },
 
-    saveData: function(tp, inp){
-      var _dataObj = this.model.get(this.model.get('storageName'));
-      // _dataObj[tp][inp] = this.model.get('message');
-      // this.model.set(this.model.get('storageName'), _dataObj);
+    setItem: function(list, id, cls){
+      for (var n = 0; n < list.length; n++){
+        if (list[n].inputId == id && !(cls in list[n].steps)) {
+          list[n].steps.push(cls);
+        }
+      }
+      return list;
+    },
+
+    removeItem: function(list, id, cls){
+      for (var n = 0; n < list.length; n++){
+        if (list[n].inputId == id && cls in list[n].steps){
+          var idx = list[n].steps.indexOf(cls);
+          list[n].steps.splice(idx, 1);
+        }
+      }
+      return list;
+    },
+
+    saveData: function(){
+      var _topic = this.model.get('topic');
+      var _dataObj = { _topic : this.model.get('items')};
       this.writeDB(_dataObj);
       console.log('saved Data');
     },
     
-    resetData: function(tp, inp){
+    resetData: function(tp){
       // var _dataObj = this.model.get(this.model.get('storageName'));
       // _dataObj[tp][inp] = this.model.get('message');
       // this.model.set(this.model.get('storageName'), _dataObj);
@@ -140,7 +192,7 @@ define(function(require) {
       console.log('reset Data');
     },
 
-    clearData: function(tp){
+    clearData: function(){
       // var _dataObj = this.model.get(this.model.get('storageName'));
       // delete _dataObj[tp];
       // this.model.set(this.model.get('storageName'), _dataObj);
