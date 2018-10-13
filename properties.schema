@@ -85,7 +85,7 @@
       "default": "first",
       "validators": []
     },
-    "_items": {
+    "items": {
       "type": "array",
       "required": true,
       "title": "Selectable options",

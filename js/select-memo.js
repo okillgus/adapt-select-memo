@@ -40,13 +40,13 @@ define(function(require) {
 
 
       var _inputId = this.model.get('inputId');
-      var _items = this.model.get('_items'); // this.structureData(_sel_text);
+      var _items = this.model.get('items'); // this.structureData(_sel_text);
       for (var n = 0; n < _items.length; n++){
         _items[n].inputId = _inputId+String(n);
         _items[n].steps = [];
         _items[n].time = 0;
       }
-      this.model.set('_items', _items);
+      this.model.set('items', _items);
 
       //console.log('structured: ',_items);
       // var _dbName = this.model.get('storageName');
@@ -82,7 +82,8 @@ define(function(require) {
       var _db = this.model.get(_storageName);
       var _topic = this.model.get('topic');
       if (!_db){
-        _db = {_topic:[] };
+        _db = {};
+        _db[_topic] = [];
       }
       else if (!_db.hasProperty(_topic)){
         _db[_topic] = [];
