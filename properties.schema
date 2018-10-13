@@ -48,33 +48,15 @@
       "default": "",
       "validators": []
     },
-    "topic_complete": {
-      "type": "string",
-      "required": false,
-      "inputType": "Text",
-      "title": "Complete Topic",
-      "help": "Specify the complete topic for displaying it later.",
-      "default": "",
-      "validators": []
-    },
     "inputId": {
       "type": "string",
       "required": false,
       "inputType": "Text",
       "title": "InputID",
-      "help": "Specify a unique ID for all options of your selection.",
+      "help": "Specify an ID for all options of your selection.",
       "default": "select-memo-input_",
       "validators": []
     },      
-    "modus": {
-      "type": "boolean",
-      "required": false,
-      "inputType": {"type": "Boolean", "options": [true, false]},
-      "title": "readonly",
-      "help": "Specify if the component is readonly, otherwise textarea will be editable.",
-      "default": false,
-      "validators": []
-    },
     "step": {
       "type": "string",
       "required": true,
@@ -106,6 +88,24 @@
           }
         }
       }
+    },
+    "reset_this": {
+      "type": "string",
+      "required": true,
+      "inputType": "Text",
+      "title": "Button Reset",
+      "help": "Specify the capture of the button",
+      "default": "Reset",
+      "validators": []
+    },
+    "clear_all": {
+      "type": "string",
+      "required": true,
+      "inputType": "Text",
+      "title": "Button Clear all",
+      "help": "Specify the capture of the button",
+      "default": "Clear all",
+      "validators": []
     }
   }
 }
