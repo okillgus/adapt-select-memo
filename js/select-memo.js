@@ -6,7 +6,6 @@ define(function(require) {
   var SelectMemo = ComponentView.extend({
 
     events: {
-      // 'click .selectMemoItem':  'saveSelectMemo',
       'click .resetSelectMemo': 'resetSelectMemo',
       'click .clearSelectMemo': 'clearSelectMemo',
       'change .select-memo-checkbox': 'toggleSelect',
@@ -16,59 +15,34 @@ define(function(require) {
       // this.checkIfResetOnRevisit();
       console.log('calling initData.');
       this.initData();
-    },
-
-    postRender: function() {
       console.log('calling importData.');
       var data = this.importData();
       this.updateModel(data);
-      this.updateView(data);
-      //if (! this.model.get('modus')){
-      //  this.updateView(data);
-      //}
-      //else{
-      //console.log('calling displayData.');
-      //this.displayData();
-      //}
+    },
+
+    postRender: function() {
+
+      // this.updateView(data);
       this.setReadyStatus();
     },
 
     initData: function(){
       // Datensatz herrichten 
-      // var _topic = this.model.get('topic');
-      //var _sel_text = this.model.get('selection_text');
-
 
       var _inputId = this.model.get('inputId');
-      var _items = this.model.get('items'); // this.structureData(_sel_text);
+      var _items = this.model.get('items');
       for (var n = 0; n < _items.length; n++){
         _items[n].inputId = _inputId+String(n);
-        _items[n].steps = [];
+        _items[n].steps = "";
         _items[n].time = 0;
       }
       this.model.set('items', _items);
-
-      //console.log('structured: ',_items);
-      // var _dbName = this.model.get('storageName');
-      // var _data = this.readDB();
-      // console.log('importing ..., raw: '+_data);
-      // aus selection_text auslesen? zeile fuer zeile
-      // _data = this.checkData(_topic, _items, _data);
-      //console.log('compared: '+_data);
-      // this.model.set(_dbName,_data);
       console.log('init: ');
       console.log(_items);
     },
 
     importData: function(){
       // Daten in die View laden
-      // var dbName = this.model.get('storageName');
-      // console.log(dbName);
-      // var selectMemoDB = this.model.get(dbName);
-      // console.log('postrender', selectMemoDB);
-      // var _topic = this.model.get('topic');
-      // var _inputId = this.model.get('inputId');
-      // var _data = selectMemoDB[_topic];
       var _data = this.readDB() || {};
       _data = this.checkData(_data);
       console.log('imported:');
@@ -93,7 +67,6 @@ define(function(require) {
     },
 
     updateModel: function(data){
-
       console.log('updating model data');
       var _topic = this.model.get('topic');
       if(data[_topic]['items'] != []){
