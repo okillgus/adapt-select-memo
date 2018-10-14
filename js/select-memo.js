@@ -13,16 +13,21 @@ define(function(require) {
 
     preRender: function() {
       // this.checkIfResetOnRevisit();
-      console.log('calling initData.');
+      // console.log('calling initData.');
       this.initData();
-      console.log('calling importData.');
-      //var data = this.importData();
-      //this.updateModel(data);
+
     },
 
     postRender: function() {
+      var topic = this.model.get('topic');
+      console.log('calling importData.');
+      var data = this.importData();
+      console.log('imported from DB:');
+      console.log(data);
 
-      // this.updateView(data);
+      this.updateModel(data, topic);
+      this.updateView(data, topic);
+
       this.setReadyStatus();
     },
 
@@ -37,51 +42,59 @@ define(function(require) {
         _items[n].time = 0;
       }
       this.model.set('items', _items);
-      console.log('init: ');
-      console.log(_items);
+      // console.log('init: ');
+      // console.log(_items);
     },
 
     importData: function(){
-      // Daten in die View laden
+      // Daten nachladen;
+      var _topic = this.model.get('topic');
       var _data = this.readDB();
-      _data = this.checkData(_data);
+      _data = this.checkData(_data, _topic);
       console.log('imported:');
       console.log(_data);
       // this.initView(_topic, _inputId, _data);
       return _data;
     },
 
-    checkData: function(data){
-      var _topic = this.model.get('topic');
+    checkData: function(data, tp){
+
       if (!data){
         data = {};
-        data[_topic] = [];
+      }
+
+      if (data[tp] == undefined){
+        data[tp] = [];
         this.writeDB(data);
       }
-      else if (!data.hasProperty(_topic)){
-        data[_topic] = [];
-        this.writeDB(data);
+
+      if (data[tp].length == 0){
+        return false;
       }
+
       console.log('checked:');
       console.log(data);
       return data;
     },
 
-    updateModel: function(data){
-      console.log('updating model data');
-      var _topic = this.model.get('topic');
-      if(data[_topic]['items'] != []){
-        this.model.set('items', data[_topic]['items']);
+    updateModel: function(data, tp){
+      console.log('! updating model data');
+      if(data){
+        console.log('data:', data);
+        console.log(data[tp]);
+        this.model.set('items', data[tp]);
+      }
+      else{
+        console.log('no data');
       }
     },
 
-    updateView: function(data){
+    updateView: function(data, tp){
 
-      var _topic = this.model.get('topic');
       var _visit = this.model.get('step');
-
-      for (var item in data[_topic]){
+      for (var idx in data[tp]){
         console.log('updating item');
+        var item = data[tp][idx];
         console.log(item);
         // graphische Darstellung: schon gewählt wurde...  
         // var _classes = item.steps.join(' ');
@@ -101,7 +114,7 @@ define(function(require) {
       var _visit = this.model.get('step');
       var _inputId = ev.currentTarget.id;
       var _inputCont = $('#item_'+_inputId);
-
+      console.log('toggleSelect: ', _inputId);
       var changedItem = this.toggleItem(_inputId, _visit);
       _inputCont.toggleClass(_visit);
       this.saveData();
@@ -109,6 +122,8 @@ define(function(require) {
 
     toggleItem: function(id, cls){
       var _items = this.model.get('items');
+      console.log('Items?');
+      console.log(_items);
 
       for (var n = 0; n <_items.length; n++){
         var item = _items[n];
@@ -129,7 +144,8 @@ define(function(require) {
 
     saveData: function(){
       var _topic = this.model.get('topic');
-      var _dataObj = { _topic : this.model.get('items')};
+      var _dataObj = {};
+      _dataObj[_topic] = this.model.get('items');
       this.writeDB(_dataObj);
       console.log('saved Data');
     },
