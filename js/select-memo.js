@@ -123,13 +123,13 @@ define(function(require) {
       var removeSelection = this.appendSelected(inputId);
       if (removeSelection) {
         console.log(inputId, removeSelection);
-        this.toggleItem(removeSelection, visit);
+        this.toggleItem(removeSelection, visit, true);
       }
       // rücksichern in DB 
       this.saveData();
     },
 
-    toggleItem: function(id, cls){
+    toggleItem: function(id, cls, ev){
 
       var inputElem = $('#'+id);
 
@@ -146,7 +146,11 @@ define(function(require) {
         if (item.inputId == id) {
           item = this.toggleStep(item, cls);
           items[n] = item;
-          // inputElem.prop('checked', item.steps.indexOf(cls));
+          if (ev) {
+            console.log('unselecting?');
+            console.log(item.steps.indexOf(cls))
+            inputElem.prop('checked', false);
+          }
           this.model.set('items', items);
           return item;    
         }
