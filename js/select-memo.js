@@ -7,7 +7,6 @@ define(function(require) {
 
     events: {
       'click .resetSelectMemo': 'resetSelectMemo',
-      'click .clearSelectMemo': 'clearSelectMemo',
       'change .select-memo-checkbox': 'toggleSelect',
     },
 
@@ -43,6 +42,7 @@ define(function(require) {
         _items[n].time = 0;
       }
       this.model.set('items', _items);
+      this.model.set('selected', []);
       // console.log('init: ');
       // console.log(_items);
     },
@@ -105,29 +105,35 @@ define(function(require) {
         if (item.steps.indexOf(_visit) > -1){
           var _inputElem = $('#'+item.inputId);
           _inputElem.prop('checked', true);
+          this.appendSelected(item.inputId);
         }        
       }
     },
 
     toggleSelect: function(ev){
       // Nach Klick auf Input
-      var _visit = this.model.get('step');
+      var visit = this.model.get('step');
 
       // view verändern
       // visit( fst, snd, trd) abziehen oder ergänzen
-      var _inputId = ev.currentTarget.id;
-      console.log('toggleSelect: ', _inputId);
-      var _inputCont = $('#item_'+_inputId);
-      _inputCont.toggleClass(_visit);
+      var inputId = ev.currentTarget.id;
 
       // model  verändern
-      var changedItem = this.toggleItem(_inputId, _visit);
-
+      var changedItem = this.toggleItem(inputId, visit);
+      var removeSelection = this.appendSelected(inputId);
+      if (removeSelection) {
+        this.toggleItem(removeSelection, visit);
+      }
       // rücksichern in DB 
       this.saveData();
     },
 
     toggleItem: function(id, cls){
+
+      console.log('toggleContainer: ', id);
+      var inputCont = $('#item_'+id);
+      inputCont.toggleClass(cls);
+
       var _items = this.model.get('items');
       console.log('Items?');
       console.log(_items);
@@ -154,6 +160,20 @@ define(function(require) {
       return item;   
     },
 
+    appendSelected: function(id){
+      var selectedList = this.model.get('selected');
+      var giveBack = false;
+      if ( selectedList.indexOf(id) < 0 ){
+        selectedList.push(id);
+        var maximum = this.model.get('maxSelect');
+        if (selectedList.length > maximum && maximum != 0 ){
+          var giveBack = selectedList.shift();
+        }
+      }
+      this.model.set('selected', selectedList);
+      return giveBack; 
+    },
+
     saveData: function(){
       var _topic = this.model.get('topic');
       var _dataObj = {};
@@ -164,12 +184,19 @@ define(function(require) {
     
     resetSelectMemo: function(){
       console.log('reset');
+      var topic = this.model.get('topic');
+      var items = this.model.get('items');
 
-      var _items = this.model.get('items');
-      for (var n = 0; n < _items.length; n++){
-        _items[n].steps = "";
+      for (var n = 0; n < items.length; n++){
+        items[n].steps = "";
+        var inputCont = $('#item_'+items[n].inputId);
+        inputCont.prop('class', 'component-item select-memo-item');
+        var inputElem = $('#'+items[n].inputId);
+        inputElem.prop('checked', false);
       }
-      this.synchronize(_items);
+      this.updateModel(items);
+      this.updateDB(items, topic);
+      
     },
 
     synchronize: function(data){
@@ -177,7 +204,7 @@ define(function(require) {
       console.log('synchronize data');
       console.log(data);
       // sync DB
-      var dbdata = this.checkData(this.readDB()) || {};
+      var dbdata = this.readDB() || {};
       console.log('imported data');
       console.log(dbdata);
 
@@ -186,9 +213,6 @@ define(function(require) {
 
       // syncModel
       this.updateModel(data);
-
-      // syncView
-      this.updateView(data);
     },
 
     clearSelectMemo: function(){
@@ -214,6 +238,12 @@ define(function(require) {
       console.log('writing...', data);
       var _data = JSON.stringify(data);
       localStorage.setItem(this.model.get('storageName'), _data);
+    },
+
+    updateDB: function(data, topic){
+      var dbdata = this.readDB() || {};
+      dbdata[topic] = data;
+      this.writeDB(dbdata);
     }
   },
 
