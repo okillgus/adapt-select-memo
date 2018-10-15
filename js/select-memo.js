@@ -19,14 +19,15 @@ define(function(require) {
     },
 
     postRender: function() {
-      var topic = this.model.get('topic');
       console.log('calling importData.');
       var data = this.importData();
+
       console.log('imported from DB:');
       console.log(data);
-
-      this.updateModel(data, topic);
-      this.updateView(data, topic);
+      var topic = this.model.get('topic');
+      var importedItems = data[topic];
+      this.updateModel(importedItems);
+      this.updateView(importedItems);
 
       this.setReadyStatus();
     },
@@ -77,24 +78,23 @@ define(function(require) {
       return data;
     },
 
-    updateModel: function(data, tp){
+    updateModel: function(items){
       console.log('! updating model data');
-      if(data){
-        console.log('data:', data);
-        console.log(data[tp]);
-        this.model.set('items', data[tp]);
+      if(items){
+        console.log('data:', items);
+        this.model.set('items', items);
       }
       else{
         console.log('no data');
       }
     },
 
-    updateView: function(data, tp){
+    updateView: function(items){
 
       var _visit = this.model.get('step');
-      for (var idx in data[tp]){
+      for (var idx in items){
         console.log('updating item');
-        var item = data[tp][idx];
+        var item = items[idx];
         console.log(item);
         // graphische Darstellung: schon gewählt wurde...  
         // var _classes = item.steps.join(' ');
@@ -108,15 +108,22 @@ define(function(require) {
         }        
       }
     },
-    
-    toggleSelect: function(ev){
 
+    toggleSelect: function(ev){
+      // Nach Klick auf Input
       var _visit = this.model.get('step');
+
+      // view verändern
+      // visit( fst, snd, trd) abziehen oder ergänzen
       var _inputId = ev.currentTarget.id;
-      var _inputCont = $('#item_'+_inputId);
       console.log('toggleSelect: ', _inputId);
-      var changedItem = this.toggleItem(_inputId, _visit);
+      var _inputCont = $('#item_'+_inputId);
       _inputCont.toggleClass(_visit);
+
+      // model  verändern
+      var changedItem = this.toggleItem(_inputId, _visit);
+
+      // rücksichern in DB 
       this.saveData();
     },
 
@@ -126,20 +133,25 @@ define(function(require) {
       console.log(_items);
 
       for (var n = 0; n <_items.length; n++){
-        var item = _items[n];
+        item = _items[n];
         if (item.inputId == id) {
-          if (item.steps.indexOf(cls) < 0){
-            if (item.steps.substr(-1) != " "){cls = " "+ cls;}
-            item.steps = item.steps + cls;
-          }
-          else{
-            item.steps = item.steps.replace(new RegExp(cls, 'g'), "");
-          }
+          item = this.toggleStep(item, cls);
           _items[n] = item;
           this.model.set('items', _items);
-          return item;   
+          return item;    
         }
       }
+    },
+
+    toggleStep: function(item, cls){
+      if (item.steps.indexOf(cls) < 0){
+        if (item.steps.substr(-1) != " "){cls = " "+ cls;}
+        item.steps = item.steps + cls;
+      }
+      else{
+        item.steps = item.steps.replace(new RegExp(cls, 'g'), "");
+      }
+      return item;   
     },
 
     saveData: function(){
@@ -150,44 +162,41 @@ define(function(require) {
       console.log('saved Data');
     },
     
-    resetData: function(tp){
-      // var _dataObj = this.model.get(this.model.get('storageName'));
-      // _dataObj[tp][inp] = this.model.get('message');
-      // this.model.set(this.model.get('storageName'), _dataObj);
-      // this.writeDB(_dataObj);
-      console.log('reset Data');
-    },
-
-    clearData: function(){
-      // var _dataObj = this.model.get(this.model.get('storageName'));
-      // delete _dataObj[tp];
-      // this.model.set(this.model.get('storageName'), _dataObj);
-      // this.writeDB(_dataObj);
-      console.log('cleared Data');
-    },
-
-    // Function to be called by user-interaction
-    saveSelectMemo: function(){
-      //var _topic = this.model.get('topic');
-      //var _inputId = this.model.get('inputId');
-      //var memoText = this.$('#memo-in-'+_inputId).val();
-      //this.updateData(_topic, _inputId, memoText);
-      console.log('saved: ');
-    },
-
     resetSelectMemo: function(){
       console.log('reset');
-      // var _topic = this.model.get('topic');
-      // var _inputId = this.model.get('inputId');
-      // this.updateInput(_inputId, this.model.get('message'));
-      // this.resetData(_topic, _inputId);
+
+      var _items = this.model.get('items');
+      for (var n = 0; n < _items.length; n++){
+        _items[n].steps = "";
+      }
+      this.synchronize(_items);
+    },
+
+    synchronize: function(data){
+      var topic = this.model.get('topic');
+      console.log('synchronize data');
+      console.log(data);
+      // sync DB
+      var dbdata = this.checkData(this.readDB()) || {};
+      console.log('imported data');
+      console.log(dbdata);
+
+      dbdata[topic] = data;
+      this.writeDB(dbdata);
+
+      // syncModel
+      this.updateModel(data);
+
+      // syncView
+      this.updateView(data);
     },
 
     clearSelectMemo: function(){
-      console.log('clear');
-      // this.updateInput(this.model.get('inputId'), this.model.get('message')); // -> Das muss für alle inputs eines topic geschehen
-      // var _topic = this.model.get('topic');
-      // this.clearData(_topic);
+      console.log('clear?');
+      // var dbdata = this.checkdata(this.readDB()) || {};
+      // dbdata[_topic] = _items;
+      // this.writeDB(dbdata);
+      // this.importData();
     },
 
     // DBMS: read-write localStorage
