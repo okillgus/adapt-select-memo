@@ -122,6 +122,7 @@ define(function(require) {
       var changedItem = this.toggleItem(inputId, visit);
       var removeSelection = this.appendSelected(inputId);
       if (removeSelection) {
+        console.log(inputId, removeSelection);
         this.toggleItem(removeSelection, visit);
       }
       // rücksichern in DB 
@@ -130,20 +131,23 @@ define(function(require) {
 
     toggleItem: function(id, cls){
 
+      var inputElem = $('#'+id);
+
       console.log('toggleContainer: ', id);
       var inputCont = $('#item_'+id);
       inputCont.toggleClass(cls);
 
-      var _items = this.model.get('items');
+      var items = this.model.get('items');
       console.log('Items?');
-      console.log(_items);
+      console.log(items);
 
-      for (var n = 0; n <_items.length; n++){
-        item = _items[n];
+      for (var n = 0; n < items.length; n++){
+        var item = items[n];
         if (item.inputId == id) {
           item = this.toggleStep(item, cls);
-          _items[n] = item;
-          this.model.set('items', _items);
+          items[n] = item;
+          // inputElem.prop('checked', item.steps.indexOf(cls));
+          this.model.set('items', items);
           return item;    
         }
       }
@@ -167,7 +171,7 @@ define(function(require) {
         selectedList.push(id);
         var maximum = this.model.get('maxSelect');
         if (selectedList.length > maximum && maximum != 0 ){
-          var giveBack = selectedList.shift();
+          giveBack = selectedList.shift();
         }
       }
       this.model.set('selected', selectedList);
