@@ -1,5 +1,5 @@
 define(function(require) {
-    //PROBLEM: cannot rfeda items of infdefined
+
   var ComponentView = require('coreViews/componentView');
   var Adapt = require('coreJS/adapt');
 
@@ -26,7 +26,7 @@ define(function(require) {
       var topic = this.model.get('topic');
       var importedItems = data[topic];
       this.updateModel(importedItems);
-      this.updateView(importedItems);
+      this.updateView();
 
       this.setReadyStatus();
     },
@@ -38,7 +38,8 @@ define(function(require) {
       var inputId = this.model.get('inputId');
       var items = this.model.get('items');
       for (var n = 0; n < items.length; n++){
-        items[n].inputId = topic+'_'+inputId+String(n);
+        items[n].id = "smc_"+String(Math.random()).substr(2);
+        items[n].inputId = inputId+String(n);
         items[n].steps = "";
         items[n].time = 0;
       }
@@ -83,30 +84,45 @@ define(function(require) {
       // console.log('! updating model data');
       if(items){
         // console.log('data:', items);
-        this.model.set('items', items);
+        // this.model.set('items', items);
+        var m_items = this.model.get('items');
+        // console.log('page');
+        // console.log(m_items);
+        // console.log('db');
+        // console.log(items);
+        for (var n = 0; n < m_items.length; n++){
+          // console.log('page', m_items[n].steps);
+          // console.log('db', items[n].steps);
+          m_items[n].steps = items[n].steps;
+        }
+        this.model.set('items', m_items);
       }
-      else{
-        console.log('no data');
-      }
+      // else{
+      //   console.log('no data');
+      // }
     },
 
-    updateView: function(items){
+    updateView: function(){
       var topic = this.model.get('topic');
       var _visit = this.model.get('step');
+      items = this.model.get('items');
+      // console.log(items);
       for (var idx in items){
         // console.log('updating item');
         var item = items[idx];
         // console.log(item);
         // graphische Darstellung: schon gewählt wurde...  
         // var _classes = item.steps.join(' ');
-        var _inputCont = $('#item_'+item.inputId);
+        var _inputCont = $('#item_'+item.id);
+        // console.log(_inputCont);
         // class_str hinzufügen
         _inputCont.addClass(item.steps);
 
         if (item.steps.indexOf(_visit) > -1){
-          var _inputElem = $('#'+item.inputId);
+          var _inputElem = $('#'+item.id);
+          // console.log(_inputElem);
           _inputElem.prop('checked', true);
-          this.appendSelected(item.inputId);
+          this.appendSelected(item.id);
         }        
       }
     },
@@ -117,13 +133,13 @@ define(function(require) {
 
       // view verändern
       // visit( fst, snd, trd) abziehen oder ergänzen
-      var inputId = ev.currentTarget.id;
+      var elemId = ev.currentTarget.id;
 
       // model  verändern
-      var changedItem = this.toggleItem(inputId, visit);
-      var removeSelection = this.appendSelected(inputId);
+      var changedItem = this.toggleItem(elemId, visit);
+      var removeSelection = this.appendSelected(elemId);
       if (removeSelection) {
-        console.log(inputId, removeSelection);
+        // console.log(inputId, removeSelection);
         this.toggleItem(removeSelection, visit, true);
       }
       // rücksichern in DB 
@@ -144,7 +160,7 @@ define(function(require) {
 
       for (var n = 0; n < items.length; n++){
         var item = items[n];
-        if (item.inputId == id) {
+        if (item.id == id) {
           item = this.toggleStep(item, cls);
           items[n] = item;
           if (ev) {
@@ -198,9 +214,9 @@ define(function(require) {
 
       for (var n = 0; n < items.length; n++){
         items[n].steps = "";
-        var inputCont = $('#item_'+items[n].inputId);
+        var inputCont = $('#item_'+items[n].id);
         inputCont.prop('class', 'component-item select-memo-item');
-        var inputElem = $('#'+items[n].inputId);
+        var inputElem = $('#'+items[n].id);
         inputElem.prop('checked', false);
       }
       this.updateModel(items);
