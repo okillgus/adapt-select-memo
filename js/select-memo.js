@@ -18,11 +18,11 @@ define(function(require) {
     },
 
     postRender: function() {
-      console.log('calling importData.');
+      // console.log('calling importData.');
       var data = this.importData();
 
-      console.log('imported from DB:');
-      console.log(data);
+      // console.log('imported from DB:');
+      // console.log(data);
       var topic = this.model.get('topic');
       var importedItems = data[topic];
       this.updateModel(importedItems);
@@ -34,14 +34,15 @@ define(function(require) {
     initData: function(){
       // Datensatz herrichten 
 
-      var _inputId = this.model.get('inputId');
-      var _items = this.model.get('items');
-      for (var n = 0; n < _items.length; n++){
-        _items[n].inputId = _inputId+String(n);
-        _items[n].steps = "";
-        _items[n].time = 0;
+      var topic = this.model.get('topic');
+      var inputId = this.model.get('inputId');
+      var items = this.model.get('items');
+      for (var n = 0; n < items.length; n++){
+        items[n].inputId = topic+'_'+inputId+String(n);
+        items[n].steps = "";
+        items[n].time = 0;
       }
-      this.model.set('items', _items);
+      this.model.set('items', items);
       this.model.set('selected', []);
       // console.log('init: ');
       // console.log(_items);
@@ -52,8 +53,8 @@ define(function(require) {
       var _topic = this.model.get('topic');
       var _data = this.readDB();
       _data = this.checkData(_data, _topic);
-      console.log('imported:');
-      console.log(_data);
+      // console.log('imported:');
+      // console.log(_data);
       // this.initView(_topic, _inputId, _data);
       return _data;
     },
@@ -73,15 +74,15 @@ define(function(require) {
         return false;
       }
 
-      console.log('checked:');
-      console.log(data);
+      // console.log('checked:');
+      // console.log(data);
       return data;
     },
 
     updateModel: function(items){
-      console.log('! updating model data');
+      // console.log('! updating model data');
       if(items){
-        console.log('data:', items);
+        // console.log('data:', items);
         this.model.set('items', items);
       }
       else{
@@ -90,12 +91,12 @@ define(function(require) {
     },
 
     updateView: function(items){
-
+      var topic = this.model.get('topic');
       var _visit = this.model.get('step');
       for (var idx in items){
-        console.log('updating item');
+        // console.log('updating item');
         var item = items[idx];
-        console.log(item);
+        // console.log(item);
         // graphische Darstellung: schon gewählt wurde...  
         // var _classes = item.steps.join(' ');
         var _inputCont = $('#item_'+item.inputId);
@@ -130,16 +131,16 @@ define(function(require) {
     },
 
     toggleItem: function(id, cls, ev){
-
+      var topic = this.model.get('topic');
       var inputElem = $('#'+id);
 
-      console.log('toggleContainer: ', id);
+      // console.log('toggleContainer: ', id);
       var inputCont = $('#item_'+id);
       inputCont.toggleClass(cls);
 
       var items = this.model.get('items');
-      console.log('Items?');
-      console.log(items);
+      // console.log('Items?');
+      // console.log(items);
 
       for (var n = 0; n < items.length; n++){
         var item = items[n];
@@ -147,8 +148,8 @@ define(function(require) {
           item = this.toggleStep(item, cls);
           items[n] = item;
           if (ev) {
-            console.log('unselecting?');
-            console.log(item.steps.indexOf(cls))
+            // console.log('unselecting?');
+            // console.log(item.steps.indexOf(cls))
             inputElem.prop('checked', false);
           }
           this.model.set('items', items);
@@ -187,11 +188,11 @@ define(function(require) {
       var _dataObj = {};
       _dataObj[_topic] = this.model.get('items');
       this.writeDB(_dataObj);
-      console.log('saved Data');
+      // console.log('saved Data');
     },
     
     resetSelectMemo: function(){
-      console.log('reset');
+      // console.log('reset');
       var topic = this.model.get('topic');
       var items = this.model.get('items');
 
@@ -207,43 +208,19 @@ define(function(require) {
       
     },
 
-    synchronize: function(data){
-      var topic = this.model.get('topic');
-      console.log('synchronize data');
-      console.log(data);
-      // sync DB
-      var dbdata = this.readDB() || {};
-      console.log('imported data');
-      console.log(dbdata);
-
-      dbdata[topic] = data;
-      this.writeDB(dbdata);
-
-      // syncModel
-      this.updateModel(data);
-    },
-
-    clearSelectMemo: function(){
-      console.log('clear?');
-      // var dbdata = this.checkdata(this.readDB()) || {};
-      // dbdata[_topic] = _items;
-      // this.writeDB(dbdata);
-      // this.importData();
-    },
-
     // DBMS: read-write localStorage
     readDB: function(){
       // Daten aus localStorage holen
       var _data = localStorage.getItem(this.model.get('storageName'));
-      console.log('reading DB:');
-      console.log(_data);
+      // console.log('reading DB:');
+      // console.log(_data);
       if (!_data) { return false; }
       return JSON.parse(_data); 
     },
 
     writeDB: function(data){
       // Daten in localStorage schreiben
-      console.log('writing...', data);
+      // console.log('writing...', data);
       var _data = JSON.stringify(data);
       localStorage.setItem(this.model.get('storageName'), _data);
     },
