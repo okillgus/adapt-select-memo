@@ -1,5 +1,6 @@
 # adapt-select-memo
-A component for the adapt learning framework: Working on a selection two times. Offering to select a number of items among others and displaying the change on the first read. On the second read it offers to alter the selection of the first read and displays the differences.
+A component for the adapt learning framework: Working on a selection for two or three times. Offering to select a number of items among others and displaying the change on the first read. On the second read it offers to alter the selection of the first read and displays the differences.
+You will have to implement the component as many times as you want the Learner to reconsider the given topic. Be sure to fill in the same topic, the same options but different steps (first, second, third).
 
 
 Settings
