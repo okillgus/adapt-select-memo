@@ -1,7 +1,7 @@
 {
     "name": "adapt-select-memo",
-    "version": "1.6",
-    "framework": ">=2",
+    "version": "1.6.1",
+    "framework": "^2.0.0",
     "homepage": "https://github.com/okillgus/adapt-select-memo",
     "repository": "git://github.com/okillgus/adapt-select-memo.git",
     "authors": [
