@@ -3,6 +3,7 @@
     "version": "1.6",
     "framework": ">=2",
     "homepage": "https://github.com/okillgus/adapt-select-memo",
+    "repository": "git://github.com/okillgus/adapt-select-memo.git",
     "authors": [
         "Oliver Killgus <oliver.killgus@googlemail.com>"
     ],
