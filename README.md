@@ -1,5 +1,5 @@
 # adapt-select-memo
-A component for the adapt learning framework: Working on a selection for two or three times. Offering to select a number of items among others and displaying the change on the first read. On the second read it offers to alter the selection of the first read and displays the differences.
+The **adapt-select-memo component** is a component for the adapt learning framework: Working on a selection for two or three times. Offering to select a number of items among others and displaying the change on the first read. On the second read it offers to alter the selection of the first read and displays the differences.
 You will have to implement the component as many times as you want the Learner to reconsider the given topic. Be sure to fill in the same topic, the same options but different steps (first, second, third).
 
 
@@ -33,6 +33,11 @@ guide the learner’s interaction with the component.
 **_classes (string)**: CSS class name to be applied to the button's containing div. The class must be predefined in one of the Less files. Separate multiple classes with a space.
 
 **_supportedLayout (string)**: This defines the horizontal position of the component in the block. Acceptable values are full, left or right.
+
+TODO
+-----------
+Using model-view-structure more efficiently. Next step will be a rewrite of the model and a transfer of function from view to model - for example saveDB.
+
 
 
 Limitations
