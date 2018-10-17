@@ -1,5 +1,5 @@
 # adapt-select-memo
-The **adapt-select-memo component** is a component for the adapt learning framework: Working on a selection for two or three times. Offering to select a number of items among others and displaying the change on the first read. On the second read it offers to alter the selection of the first read and displays the differences.
+The **adapt-select-memo component** is a component for the adapt learning framework: While working on a topic the learner is being offered to select a number of items among others. On the second read it offers to alter the selection of the first read and displays the differences. The different decisions can be displayed as a kind of CSS-Layers. 
 You will have to implement the component as many times as you want the Learner to reconsider the given topic. Be sure to fill in the same topic, the same options but different steps (first, second, third).
 
 
