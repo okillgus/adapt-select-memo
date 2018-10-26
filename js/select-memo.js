@@ -144,6 +144,7 @@ define(function(require) {
       }
       // rücksichern in DB 
       this.saveData();
+      this.setCompletionStatus();
     },
 
     toggleItem: function(id, cls, ev){
