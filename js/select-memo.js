@@ -22,16 +22,31 @@ define(function(require) {
       this.update();
       this.setReadyStatus();
     },
-
+    triggerSignal: function(){
+      Adapt.trigger("select-memo:changed", {
+        "topic": this.model.get('topic'), 
+        "id": this.model.get('id'),
+        "step": this.model.get('step')
+        });
+    },
     notify: function(param){
       // @param := model.id
       var topic = this.model.get('topic');
       var id = this.model.get('id');
 
       if (topic == param.topic &&  id != param.id){ // Changes here or elsewhere?
-        console.log('Update! ', id);
-        this.update();
+        console.log('Update? ', param.step);
+        if ( this.isLowerStep(param.step) ) {
+          console.log("Update!");
+          this.update();
+        }
       }
+    },
+
+    isLowerStep: function(step){
+      var stepList = ["first", "second", "third"];
+      var thisStep = this.model.get('step');
+      return stepList.indexOf(step) < stepList.indexOf(thisStep); 
     },
 
     update: function(){
@@ -117,11 +132,7 @@ define(function(require) {
         this.toggleItem(removeSelection, visit, true);
       }
       this.saveData();
-
-      Adapt.trigger("select-memo:changed", {
-                  "topic": this.model.get('topic'), 
-                  "id": this.model.get('id')
-                  });
+      this.triggerSignal();
       this.setCompletionStatus();
     },
 
@@ -193,7 +204,7 @@ define(function(require) {
       }
       this.updateModel(items);
       this.updateDB(items, topic);
-      
+      this.triggerSignal();
     },
 
     readDB: function(){
