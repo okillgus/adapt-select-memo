@@ -35,9 +35,9 @@ define(function(require) {
       var id = this.model.get('id');
 
       if (topic == param.topic &&  id != param.id){ // Changes here or elsewhere?
-        console.log('Update? ', param.step);
+        //console.log('Update? ', param.step);
         if ( this.isLowerStep(param.step) ) {
-          console.log("Update!");
+          //console.log("Update!");
           this.update();
         }
       }
