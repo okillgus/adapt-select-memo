@@ -114,7 +114,16 @@ define(function(require) {
       for (var idx in items){
         var item = items[idx];
         var _inputCont = $('#item_'+item.id);
-        _inputCont.addClass(item.steps);
+        // TODO: Entfernen von vormals gewählten, aber nun nicht mehr gewünschten Classes. 
+        // Fehlt Abfrage anders herum: 
+        // Gibt es Classes beim Objekt - abgesehen von einem Stamm, die nicht in items sind? 
+        // Die muss man entfernen.
+        // Oder man setzt vor dem Update die Classes auf einen Ausgangszustand zurück.
+        
+        // test...
+        _inputCont.prop('class', "component-item select-memo-item "+item.steps); 
+        // _inputCont.addClass(item.steps);
+        //... ende test
         if (item.steps.indexOf(_visit) > -1){
           var _inputElem = $('#'+item.id);
           _inputElem.prop('checked', true);
