@@ -58,8 +58,14 @@ define(function(require) {
     },
 
     initData: function(){
-      var topic = this.model.get('topic');
-      var inputId = this.model.get('inputId');
+      // var topic = this.model.get('topic');
+      // var inputId = this.model.get('inputId');
+                // insert 3-12-18
+      var topic = this.model.get('topic').replace(/ /g, "_");
+      this.model.set('topic', topic);
+      var inputId = this.model.get('inputId').replace(/ /g, "_");
+      this.model.set('inputId', inputId);
+          // ende 3-12-18
       var id = inputId+String(Math.random()).substr(2);
       this.model.set('id', id);
       var items = this.model.get('items');
